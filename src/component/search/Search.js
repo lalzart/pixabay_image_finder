@@ -15,26 +15,31 @@ class Search extends Component {
   }
 
   onTextChange = (e) => {
-    this.setState({[e.target.name]: e.target.value}, () => {
-      axios.get(`${this.state.apiUrl}/?key=${this.state.apiKey}&q=${this.state.searchText}&image_type=photo&per_page=${this.state.amount}&safesearch=false`)
-      .then(res => this.setState({images: res.data.hits}))
-      .catch(err => console.log(err));
+    const val = e.target.value;
+    this.setState({[e.target.name]: val}, () => {
+      if(val === '') {
+        this.setState({images: []});
+      } else {
+        axios.get(`${this.state.apiUrl}/?key=${this.state.apiKey}&q=${this.state.searchText}&image_type=photo&per_page=${this.state.amount}&safesearch=false`)
+        .then(res => this.setState({images: res.data.hits}))
+        .catch(err => console.log(err));
+      }
     });
   }
 
-  onAmountChange = (e, index, value ) => console.log(index); 
+  onAmountChange = (e, index, value ) => this.setState({ amount: value });
 
    render() {
      console.log(this.state.images);
      return (
        <div>
-         <TextField 
-          name="seachText"
-          value={this.state.search}
+        <TextField
+          name="searchText"
+          value={this.state.searchText}
           onChange={this.onTextChange}
-          floatingLabelText="Search For  Free Stock Images"
+          floatingLabelText="Search For Images"
           fullWidth={true}
-         />
+        />
          <br/>
          <SelectField
           floatingLabelText="Amount"
